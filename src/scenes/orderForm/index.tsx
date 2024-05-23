@@ -1,12 +1,16 @@
 import React from 'react';
 import { OrderScenePetSelection } from './components/PetSelectionSection';
+import { OrderSceneDiscountSection } from './components/DiscountSection';
 
 function OrderFormScene() {
   return (
     <main className="p-3">
       {/* we use redux to avoid prop drilling
       thus it is easier to split components */}
-      <OrderScenePetSelection />
+      <form className="max-w-xs flex flex-col gap-2 mx-auto">
+        <OrderScenePetSelection />
+        <OrderSceneDiscountSection />
+      </form>
     </main>
   );
 }
