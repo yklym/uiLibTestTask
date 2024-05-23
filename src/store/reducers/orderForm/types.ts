@@ -1,3 +1,5 @@
+import { PetType } from 'src/types/pet';
+
 export interface IOrderFormState {
-  inputValue: string;
+  selectedPetOptions: PetType | null;
 }

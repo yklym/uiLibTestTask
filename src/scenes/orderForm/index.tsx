@@ -1,14 +1,13 @@
 import React from 'react';
-import { RadioButton } from 'src/components/common/input/RadioButton';
+import { OrderScenePetSelection } from './components/PetSelectionSection';
 
 function OrderFormScene() {
   return (
-    <>
-      Hello hi
-      <RadioButton label={'option1'} />;
-      <RadioButton label={'option2'} />;
-      <RadioButton label={'option3'} />;
-    </>
+    <main className="p-3">
+      {/* we use redux to avoid prop drilling
+      thus it is easier to split components */}
+      <OrderScenePetSelection />
+    </main>
   );
 }
 
