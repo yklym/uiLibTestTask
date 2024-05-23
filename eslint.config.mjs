@@ -9,9 +9,6 @@ export default [
   ...tseslint.configs.recommended,
   pluginReactConfig,
   {
-    languageOptions: { globals: globals.browser },
-    rules: {
-      'react-hooks/exhaustive-deps': 'off'
-    }
+    languageOptions: { globals: globals.browser }
   }
 ];

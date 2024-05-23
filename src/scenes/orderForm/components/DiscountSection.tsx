@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { TextInput } from 'src/components/common/input/TextInput';
 import useDebounce from 'src/hooks/useDebounce';
 import { DISCOUNT_CODE_LENGTH, DISCOUNT_CODE_REGEX } from 'src/utils/config';
@@ -18,7 +18,7 @@ function OrderSceneDiscountSection() {
   // as a rule such things are verified by backend so we should debounce few keystrokes
   const debouncedValue = useDebounce(codeInputValue, CODE_INPUT_DEBOUNCE_TIME);
 
-  const fetchIsValidCode = async (code: string) => {
+  const fetchIsValidCode = useCallback(async (code: string) => {
     try {
       setLoading(true);
 
@@ -37,9 +37,9 @@ function OrderSceneDiscountSection() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const onDebouncedInput = () => {
+  const onDebouncedInput = useCallback(() => {
     if (debouncedValue) {
       // simple check as example
       const isValid = fullStringMatch(debouncedValue, DISCOUNT_CODE_REGEX);
@@ -50,13 +50,13 @@ function OrderSceneDiscountSection() {
       }
       fetchIsValidCode(debouncedValue);
     }
-  };
+  }, [debouncedValue, fetchIsValidCode]);
 
   useEffect(() => {
     setFieldError('');
     setApprovedCode(false);
     onDebouncedInput();
-  }, [debouncedValue]);
+  }, [debouncedValue, onDebouncedInput]);
 
   // to avoid ternaries like (isApprovedCode && 'success') || (fieldError && 'error') || 'default'
   const getInputSubLabel = () => {
