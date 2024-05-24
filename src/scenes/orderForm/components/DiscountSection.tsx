@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { TextInput } from 'src/components/common/input/TextInput';
+import { useAppDispatch } from 'src/hooks/useAppDispatch';
 import useDebounce from 'src/hooks/useDebounce';
+import { setDiscountCode } from 'src/store/reducers/orderForm';
 import { DISCOUNT_CODE_LENGTH, DISCOUNT_CODE_REGEX } from 'src/utils/config';
 import { fullStringMatch } from 'src/utils/helpers/fullStringMatch';
 import { mockDiscountCheck } from 'src/utils/mocks/mockDiscountCheck';
@@ -18,26 +20,47 @@ function OrderSceneDiscountSection() {
   // as a rule such things are verified by backend so we should debounce few keystrokes
   const debouncedValue = useDebounce(codeInputValue, CODE_INPUT_DEBOUNCE_TIME);
 
-  const fetchIsValidCode = useCallback(async (code: string) => {
-    try {
-      setLoading(true);
+  const dispatch = useAppDispatch();
 
-      const isValid = await mockDiscountCheck(code);
+  // as a rule once discount is verified on backend it will be added to the order on the
+  // backend. But I saved it to state just in case
+  const handleSaveCodeToState = useCallback(
+    (value: string) => {
+      dispatch(setDiscountCode(value));
+    },
+    [dispatch]
+  );
 
-      if (!isValid) {
-        setFieldError('Your discount code is invalid or was used already');
-        return;
+  const resetField = useCallback(() => {
+    setFieldError('');
+    setApprovedCode(false);
+    handleSaveCodeToState('');
+  }, [handleSaveCodeToState]);
+
+  const fetchIsValidCode = useCallback(
+    async (code: string) => {
+      try {
+        setLoading(true);
+
+        const isValid = await mockDiscountCheck(code);
+
+        if (!isValid) {
+          setFieldError('Your discount code is invalid or was used already');
+          return;
+        }
+
+        setLoading(false);
+
+        setApprovedCode(true);
+        handleSaveCodeToState(code);
+      } catch (e) {
+        setFieldError("Seems we couldn't confirm your discount code. Try later");
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
-
-      setApprovedCode(true);
-    } catch (e) {
-      setFieldError("Seems we couldn't confirm your discount code. Try later");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [handleSaveCodeToState]
+  );
 
   const onDebouncedInput = useCallback(() => {
     if (debouncedValue) {
@@ -53,10 +76,9 @@ function OrderSceneDiscountSection() {
   }, [debouncedValue, fetchIsValidCode]);
 
   useEffect(() => {
-    setFieldError('');
-    setApprovedCode(false);
+    resetField();
     onDebouncedInput();
-  }, [debouncedValue, onDebouncedInput]);
+  }, [debouncedValue, onDebouncedInput, resetField]);
 
   // to avoid ternaries like (isApprovedCode && 'success') || (fieldError && 'error') || 'default'
   const getInputSubLabel = () => {

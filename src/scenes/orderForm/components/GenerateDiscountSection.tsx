@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'src/components/common/Button';
-import { stallAwait } from 'src/utils/helpers/stallAwait';
 import { mockDiscountCodeGenerate } from 'src/utils/mocks/mockDiscountCodeGenerate';
-
-const MOCK_AWAIT_TIME = 2000;
 
 function OrderSceneGenerateDiscount() {
   const [isLoading, setLoading] = useState(false);
