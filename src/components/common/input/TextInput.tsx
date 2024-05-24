@@ -76,7 +76,8 @@ function TextInput({
               isSuccess && 'text-green-700',
               isError && 'text-red-600'
             )}
-            htmlFor={inputId}>
+            htmlFor={inputId}
+          >
             {label}
           </label>
         )}
@@ -89,7 +90,8 @@ function TextInput({
               'mt-2 text-sm',
               isSuccess && 'text-green-600',
               isError && 'text-red-600'
-            )}>
+            )}
+          >
             {subLabel}
           </p>
         )}
