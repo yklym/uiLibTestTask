@@ -21,6 +21,7 @@ function OrderSceneGenerateDiscount() {
       setLoading(false);
     }
   };
+
   return (
     <div>
       <h5 className="text-2xl font-bold dark:text-white mb-2">Want to get another promo code?</h5>

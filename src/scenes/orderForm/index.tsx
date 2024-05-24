@@ -3,6 +3,7 @@ import { OrderScenePetSelection } from './components/PetSelectionSection';
 import { OrderSceneDiscountSection } from './components/DiscountSection';
 import { OrderSceneGenerateDiscount } from './components/GenerateDiscountSection';
 import { OrderSceneUserNoteSection } from './components/UserNoteSection';
+import { Divider } from 'src/components/common/Divider';
 
 function OrderFormScene() {
   return (
@@ -11,8 +12,14 @@ function OrderFormScene() {
       thus it is easier to split components */}
       <form className="max-w-md flex flex-col gap-2 mx-auto">
         <OrderScenePetSelection />
+        <Divider />
+        {/*  */}
         <OrderSceneDiscountSection />
+        <Divider />
+        {/*  */}
         <OrderSceneGenerateDiscount />
+        <Divider />
+        {/*  */}
         <OrderSceneUserNoteSection />
       </form>
     </main>
