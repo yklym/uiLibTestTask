@@ -14,6 +14,7 @@ interface IProps {
   maxLength?: number;
   isDisabled?: boolean;
   isLoading?: boolean;
+  isMultiline?: boolean;
   onChange?: (value: string) => void;
 }
 
@@ -27,11 +28,12 @@ function TextInput({
   maxLength,
   isDisabled,
   isLoading,
+  isMultiline,
   onChange
 }: IProps) {
   const inputId = useId();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!isDisabled) {
       onChange?.(e.target.value);
     }
@@ -39,6 +41,25 @@ function TextInput({
 
   const isSuccess = variant === 'success';
   const isError = variant === 'error';
+
+  // to share props between text are and input
+  const commonInputProps = {
+    className: clsx(
+      'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5',
+      isSuccess && 'bg-green-50 border border-green-500 text-green-900',
+      isError &&
+        'bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500',
+      isDisabled && 'cursor-not-allowed'
+    ),
+    disabled: isDisabled,
+    placeholder: placeholder,
+    type: 'text',
+    onChange: handleChange,
+    id: inputId,
+    maxLength: maxLength,
+    name,
+    value
+  };
 
   return (
     <div className={'relative'}>
@@ -60,23 +81,8 @@ function TextInput({
           </label>
         )}
 
-        <input
-          className={clsx(
-            'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5',
-            isSuccess && 'bg-green-50 border border-green-500 text-green-900',
-            isError &&
-              'bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500',
-            isDisabled && 'cursor-not-allowed'
-          )}
-          disabled={isDisabled}
-          placeholder={placeholder}
-          type="text"
-          name={name}
-          value={value}
-          onChange={handleChange}
-          id={inputId}
-          maxLength={maxLength}
-        />
+        {isMultiline ? <textarea {...commonInputProps} /> : <input {...commonInputProps} />}
+
         {subLabel && (
           <p
             className={clsx(
